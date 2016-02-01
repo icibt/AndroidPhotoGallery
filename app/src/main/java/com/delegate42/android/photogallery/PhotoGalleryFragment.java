@@ -235,16 +235,29 @@ public class PhotoGalleryFragment extends VisibleFragment {
         return v;
     }
 
-    private class PhotoHolder extends RecyclerView.ViewHolder {
+    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageView;
+        private GalleryItem mGalleryItem;
 
         public PhotoHolder(View itemView) {
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.fragment_photo_gallery_image_view);
+            mImageView.setOnClickListener(this);
+        }
+
+        public void bindGalleryItem(GalleryItem galleryItem) {
+            mGalleryItem = galleryItem;
         }
 
         public void bindDrawable(Drawable drawable) {
             mImageView.setImageDrawable(drawable);
+        }
+
+        @Override
+        public void onClick(View v) {
+            //Intent i = new Intent(Intent.ACTION_VIEW,mGalleryItem.getPhotoPageUri());
+            Intent i = PhotoPageActivity.newIntent(getActivity(),mGalleryItem.getPhotoPageUri());
+            startActivity(i);
         }
     }
 
@@ -267,6 +280,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
             GalleryItem galleryItem = mGalleryItems.get(position);
             Drawable placeHolder = ResourcesCompat.getDrawable(getResources(), R.drawable.image_placeholder, null);
             photoHolder.bindDrawable(placeHolder);
+            photoHolder.bindGalleryItem(galleryItem);
             mThumbnailDownloader.queueThumbnail(photoHolder,galleryItem.getUrl());
         }
 
